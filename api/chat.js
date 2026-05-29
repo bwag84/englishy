@@ -7,7 +7,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const CHAT_MODEL = process.env.CHAT_MODEL || 'gpt-4o-mini';
 const STT_MODEL  = process.env.STT_MODEL  || 'gpt-4o-transcribe';
 const TTS_MODEL  = process.env.TTS_MODEL  || 'gpt-4o-mini-tts';
-const pack = require('../packs/' + (process.env.PACK || 'french'));
+const pack = require('../packs/' + (process.env.PACK || 'english-child'));
 const TTS_VOICE  = process.env.TTS_VOICE  || pack.ttsVoice;
 
 
