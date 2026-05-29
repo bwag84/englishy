@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>Frenchy — French practice</title>
+<title>Englishy — Engels leren</title>
 <meta name="theme-color" content="#C5512F" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="Frenchy" />
+<meta name="apple-mobile-web-app-title" content="Englishy" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="apple-touch-icon" href="/icon-192.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -358,8 +358,8 @@
 </head>
 <body>
   <div class="topbar">
-    <div class="brand">Frenchy<span class="dot">.</span></div>
-    <div class="tagline">Parlons français</div>
+    <div class="brand">Englishy<span class="dot">.</span></div>
+    <div class="tagline">Let's speak English!</div>
   </div>
 
   <div class="convo" id="convo"></div>
@@ -390,11 +390,11 @@
 
   <div class="start" id="start">
     <img class="mark" src="/icon-192.png" alt="" />
-    <h1>Frenchy</h1>
-    <div class="sub">Your pocket French conversation partner.</div>
-    <div class="copy">Speak French out loud and I'll talk back. Lost mid-sentence? Just switch to Dutch or English and I'll catch you — then we keep going. Perfect for ordering at the boulangerie.</div>
-    <button class="startbtn" id="startbtn">Commencer · Start</button>
-    <div class="startnote">Best with headphones or a quiet room.</div>
+    <h1>Englishy</h1>
+    <div class="sub">Jouw pocket Engelse gesprekspartner.</div>
+    <div class="copy">Praat gewoon in het Engels en ik praat terug! Weet je een woord niet? Zeg het dan in het Nederlands en ik help je verder.</div>
+    <button class="startbtn" id="startbtn">Beginnen · Start</button>
+    <div class="startnote">Doe je koptelefoon op of zoek een rustig plekje.</div>
   </div>
 
 <script>
@@ -403,17 +403,17 @@
 
   var _pack = await fetch('/api/config').then(function(r){ return r.json(); }).catch(function() {
     return {
-      name: 'Frenchy',
+      name: 'Englishy',
       uiCopy: {
-        tagline: 'Parlons français',
-        startSubtitle: 'Your pocket French conversation partner.',
-        startBody: "Speak French out loud and I'll talk back. Lost mid-sentence? Just switch to Dutch or English and I'll catch you — then we keep going. Perfect for ordering at the boulangerie.",
-        startButton: 'Commencer · Start',
-        micNote: 'Best with headphones or a quiet room.',
-        micIdle: 'Appuyez pour parler · Tap to speak',
-        micListening: "J'écoute… · Listening — tap to stop",
-        micProcessing: 'Un instant…',
-        micSpeaking: 'Frenchy parle…',
+        tagline: "Let's speak English!",
+        startSubtitle: 'Jouw pocket Engelse gesprekspartner.',
+        startBody: "Praat gewoon in het Engels en ik praat terug! Weet je een woord niet? Zeg het dan in het Nederlands en ik help je verder.",
+        startButton: 'Beginnen · Start',
+        micNote: 'Doe je koptelefoon op of zoek een rustig plekje.',
+        micIdle: 'Tik om te spreken',
+        micListening: "Ik luister… — tik om te stoppen",
+        micProcessing: 'Even wachten…',
+        micSpeaking: 'Englishy praat…',
       },
       theme: {},
     };

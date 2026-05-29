@@ -1,8 +1,8 @@
 {
-  "name": "frenchy",
+  "name": "englishy",
   "version": "1.0.0",
   "private": true,
-  "description": "A pocket French conversation partner for holiday-ready speaking and listening.",
+  "description": "Een pocket Engelse gesprekspartner voor kinderen.",
   "scripts": {
     "start": "node server.js"
   },

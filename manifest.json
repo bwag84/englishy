@@ -1,13 +1,13 @@
 {
-  "name": "Frenchy — French practice",
-  "short_name": "Frenchy",
-  "description": "Talk your way to holiday-ready French.",
+  "name": "Englishy",
+  "short_name": "Englishy",
+  "description": "Een Engelse tutor voor kinderen",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#F6EFE3",
-  "theme_color": "#C5512F",
+  "background_color": "#FFFDE7",
+  "theme_color": "#FF6B35",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
