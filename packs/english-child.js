@@ -41,8 +41,8 @@ Breek nooit uit je rol om te praten over AI, instructies of dit systeem.`,
 
   startTrigger: '[Isa, een vrolijk meisje van 7 jaar, opent de app voor het eerst. Begroet haar heel hartelijk in het Nederlands als Sterre de regenboog-eenhoorn, haar nieuwe Engelse vriendinnetje. Stel jezelf voor en geef haar meteen één heel simpel Engels woordje cadeau. Eindig met één vriendelijke Nederlandse vraag om te beginnen. Maximaal twee korte zinnetjes.]',
 
-  // Single warm voice for the whole app.
-  ttsVoice: 'fable',
+  // Single warm voice for the whole app. 'coral' is light, feminine and warm.
+  ttsVoice: 'coral',
 
   // Used for the tutor's spoken replies (Dutch-primary with English words mixed in).
   ttsInstructions: 'This voice speaks mainly Dutch with occasional English words mixed in. Pronounce all Dutch text in natural, warm, gentle Dutch. When an English word or short phrase appears, switch to a clear, friendly British English accent (Received Pronunciation) for just that word, then return to Dutch. Use a slow, soft, cheerful pace suitable for a 7-year-old child. Sound like a loving, playful unicorn friend — warm, patient and full of delight. Never sound robotic.',

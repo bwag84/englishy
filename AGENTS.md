@@ -58,7 +58,7 @@ Every correct drill answer awards one **golden star** (a sparkle-burst animation
 | `CHAT_MODEL` | `gpt-4o-mini` | The tutor's brain. |
 | `STT_MODEL` | `gpt-4o-transcribe` | Speech-to-text (auto-detects NL / EN). |
 | `TTS_MODEL` | `gpt-4o-mini-tts` | Text-to-speech (honours voice instructions). |
-| `TTS_VOICE` | _(pack: `fable`)_ | Speaking voice. The British accent is driven mainly by the pack's `ttsInstructions`. |
+| `TTS_VOICE` | _(pack: `coral`)_ | Speaking voice (light, warm, feminine). The British accent is driven mainly by the pack's `ttsInstructions`. |
 
 ---
 
@@ -101,5 +101,5 @@ The microphone requires a **secure (https) origin** — `localhost` is fine for 
 - **iOS audio playback.** Playback uses the Web Audio API (`decodeAudioData` + a buffer source), unlocked inside the Start tap. On iPhones, Web Audio can be silenced by the hardware mute switch and the context can go dormant between turns. If playback problems surface, the robust fix is to play replies through a reusable HTML `<audio>` element (an object URL from the mp3 blob) — HTML media plays through the silent switch.
 - **Cost.** Voice is metered per minute on the OpenAI key. Fine for personal use (cents per session).
 - **Request size.** Audio is sent as base64 JSON; recording auto-stops at 40s to keep clips within serverless body limits.
-- **Drill prompt audio.** Drill prompts are Dutch and read with the pack's `promptTtsInstructions`; feedback is Dutch-first (with the English answer word) read with the default `ttsInstructions`. Both use the single pack `ttsVoice` (`fable`).
+- **Drill prompt audio.** Drill prompts are Dutch and read with the pack's `promptTtsInstructions`; feedback is Dutch-first (with the English answer word) read with the default `ttsInstructions`. Both use the single pack `ttsVoice` (`coral`).
 - **Two localStorage stores.** `englishy_progress` (SM-2 drill scheduling) and `englishy_stars` (gamification). Changing these keys resets that data.

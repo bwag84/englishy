@@ -63,7 +63,7 @@ Set these on Vercel (`vercel env add NAME`, then `vercel --prod`) or in your VPS
 
 | Variable | Default | What it does |
 |---|---|---|
-| `TTS_VOICE` | `fable` (from the pack) | The speaking voice. `fable` leans British; the British accent is mainly driven by the pack's voice instructions. |
+| `TTS_VOICE` | `coral` (from the pack) | The speaking voice — `coral` is light, warm and feminine. The British accent is driven by the pack's voice instructions, so any voice can be made to sound British. |
 | `CHAT_MODEL` | `gpt-4o-mini` | The tutor's brain. Fast and cheap. Use `gpt-4o` for richer replies. |
 | `STT_MODEL` | `gpt-4o-transcribe` | Speech-to-text (auto-detects Dutch / English). |
 | `TTS_MODEL` | `gpt-4o-mini-tts` | Text-to-speech (honours the voice instructions, including the British accent). |
