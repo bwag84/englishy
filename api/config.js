@@ -1,5 +1,5 @@
 // api/config.js — returns pack metadata to the frontend.
-const pack = require('../packs/' + (process.env.PACK || 'french'));
+const pack = require('../packs/' + (process.env.PACK || 'english-child'));
 
 module.exports = function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');

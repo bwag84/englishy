@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Englishy — Engels leren</title>
-<meta name="theme-color" content="#C5512F" />
+<meta name="theme-color" content="#FF6B35" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Englishy" />
@@ -359,7 +359,7 @@
 <body>
   <div class="topbar">
     <div class="brand">Englishy<span class="dot">.</span></div>
-    <div class="tagline">Let's speak English!</div>
+    <div class="tagline">Samen Engels leren!</div>
   </div>
 
   <div class="convo" id="convo"></div>
@@ -369,21 +369,21 @@
   <div id="drill-silent" class="drill-wrap"></div>
 
   <div class="dock" id="dock">
-    <button class="mic" id="mic" aria-label="Tap to speak">
+    <button class="mic" id="mic" aria-label="Tik om te praten">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="9" y="2" width="6" height="12" rx="3"></rect>
         <path d="M5 10a7 7 0 0 0 14 0"></path>
         <line x1="12" y1="19" x2="12" y2="22"></line>
       </svg>
     </button>
-    <div class="miclabel" id="miclabel">Appuyez pour parler · Tap to speak</div>
+    <div class="miclabel" id="miclabel">Tik om te praten</div>
   </div>
 
   <nav class="tabs" id="tabs">
-    <button class="tab active" data-mode="convo"><span class="tab-icon">💬</span>Convo</button>
-    <button class="tab" data-mode="vocab"><span class="tab-icon">🗣️</span>Vocab</button>
-    <button class="tab" data-mode="grammar"><span class="tab-icon">✏️</span>Grammar</button>
-    <button class="tab" data-mode="silent"><span class="tab-icon">🔇</span>Silent</button>
+    <button class="tab active" data-mode="convo"><span class="tab-icon">💬</span>Praten</button>
+    <button class="tab" data-mode="vocab"><span class="tab-icon">🗣️</span>Woorden</button>
+    <button class="tab" data-mode="grammar"><span class="tab-icon">✏️</span>Zinnen</button>
+    <button class="tab" data-mode="silent"><span class="tab-icon">🤫</span>Kiezen</button>
   </nav>
 
   <div class="toast" id="toast"></div>
@@ -405,7 +405,7 @@
     return {
       name: 'Englishy',
       uiCopy: {
-        tagline: "Let's speak English!",
+        tagline: 'Samen Engels leren!',
         startSubtitle: 'Jouw pocket Engelse gesprekspartner.',
         startBody: "Praat gewoon in het Engels en ik praat terug! Weet je een woord niet? Zeg het dan in het Nederlands en ik help je verder.",
         startButton: 'Beginnen · Start',
@@ -457,7 +457,7 @@
   var _drillOnStop = null; // set by drillHandleMic; onstop calls it instead of doSend
 
   // ── Progress store (localStorage) ───────────────────────────────
-  var PROGRESS_KEY = 'frenchy_progress';
+  var PROGRESS_KEY = 'englishy_progress';
 
   function loadProgress() {
     try { return JSON.parse(localStorage.getItem(PROGRESS_KEY)) || {}; } catch(e) { return {}; }
@@ -512,7 +512,7 @@
     var blob = new Blob([data], { type: 'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'frenchy-progress.json';
+    a.download = 'englishy-progress.json';
     a.click();
   }
 
@@ -523,10 +523,10 @@
         var obj = JSON.parse(e.target.result);
         if (obj && obj.progress) {
           saveProgress(obj.progress);
-          toast('Voilà! Progress imported.');
+          toast('Gelukt! Je voortgang is geladen.');
           if (typeof renderDrillUI === 'function') renderDrillUI();
         }
-      } catch(err) { toast('Could not read file.'); }
+      } catch(err) { toast('Kon het bestand niet lezen.'); }
     };
     reader.readAsText(file);
   }
@@ -535,9 +535,8 @@
     if (!_pack || !_pack.cards) return;
     var lower = text.toLowerCase();
     _pack.cards.forEach(function(card) {
-      if (card.type === 'vocab') {
-        var frLower = card.fr.toLowerCase().replace(/^(le|la|les|l\'|un|une|des)\s+/,'');
-        if (lower.includes(frLower)) markSeen(card.id);
+      if (card.type === 'vocab' && card.back) {
+        if (lower.includes(card.back.toLowerCase())) markSeen(card.id);
       }
     });
   }
@@ -586,7 +585,7 @@
     drillCard = card;
 
     if (!card) {
-      panel.innerHTML = '<div class="drill-prompt">All done! Come back later.</div>';
+      panel.innerHTML = '<div class="drill-prompt">Goed gedaan! Kom straks terug.</div>';
       return;
     }
 
@@ -600,14 +599,14 @@
     var dueCount = allCards.filter(function(c){ var s = getCardState(progress, c.id); return s.reps > 0 && s.due <= now; }).length;
 
     panel.innerHTML =
-      '<div class="drill-stats">' + dueCount + ' due for review</div>' +
-      '<div class="drill-prompt">' + card.fr + '</div>' +
+      '<div class="drill-stats">' + dueCount + ' om te oefenen</div>' +
+      '<div class="drill-prompt">' + card.front + '</div>' +
       (card.example ? '<div class="drill-example">' + card.example + '</div>' : '') +
       '<div class="drill-feedback" id="drill-fb-' + filterType + '"></div>' +
-      '<button class="drill-next" id="drill-next-' + filterType + '" onclick="advanceDrill(\'' + filterType + '\')">Suivant →</button>' +
+      '<button class="drill-next" id="drill-next-' + filterType + '" onclick="advanceDrill(\'' + filterType + '\')">Volgende →</button>' +
       '<div class="export-row">' +
-        '<button class="export-btn" onclick="exportProgress()">⬇ Export</button>' +
-        '<label class="export-btn" style="cursor:pointer">⬆ Import<input type="file" accept=".json" style="display:none" onchange="importProgress(this.files[0])"></label>' +
+        '<button class="export-btn" onclick="exportProgress()">⬇ Opslaan</button>' +
+        '<label class="export-btn" style="cursor:pointer">⬆ Laden<input type="file" accept=".json" style="display:none" onchange="importProgress(this.files[0])"></label>' +
       '</div>';
 
     // Auto-read the prompt aloud
@@ -618,7 +617,7 @@
     fetch('/api/drill', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ttsOnly: true, text: card.fr }),
+      body: JSON.stringify({ ttsOnly: true, text: card.front }),
     })
     .then(function(r){ return r.json(); })
     .then(function(d){ if (d.audio) playB64(d.audio); })
@@ -648,7 +647,7 @@
     }
     // shuffle and take count
     pool = pool.slice().sort(function(){ return Math.random() - 0.5; });
-    return pool.slice(0, count).map(function(c){ return c.en; });
+    return pool.slice(0, count).map(function(c){ return c.back; });
   }
 
   function renderSilentUI() {
@@ -661,13 +660,13 @@
     silentAnswered = false;
 
     if (!card) {
-      panel.innerHTML = '<div class="drill-prompt">All done! Come back later.</div>';
+      panel.innerHTML = '<div class="drill-prompt">Goed gedaan! Kom straks terug.</div>';
       return;
     }
 
     markSeen(card.id);
 
-    var correctAnswer = card.en;
+    var correctAnswer = card.back;
     var distractors = getDistractors(card, 3);
     var options = [correctAnswer].concat(distractors).sort(function(){ return Math.random() - 0.5; });
 
@@ -679,33 +678,33 @@
     var dueCount = _pack.cards.filter(function(c){ var s = getCardState(progress, c.id); return s.due <= now && s.reps > 0; }).length;
 
     panel.innerHTML =
-      '<div class="drill-stats">' + dueCount + ' due for review</div>' +
-      '<div class="drill-prompt">' + card.fr + '</div>' +
+      '<div class="drill-stats">' + dueCount + ' om te oefenen</div>' +
+      '<div class="drill-prompt">' + card.front + '</div>' +
       (card.example ? '<div class="drill-example">' + card.example + '</div>' : '') +
       '<div class="drill-options" id="silent-options">' + optionsHTML + '</div>' +
       '<div class="drill-feedback" id="silent-fb"></div>' +
-      '<button class="drill-next" id="silent-next" onclick="renderSilentUI()" style="display:none">Suivant →</button>' +
+      '<button class="drill-next" id="silent-next" onclick="renderSilentUI()" style="display:none">Volgende →</button>' +
       '<div class="export-row">' +
-        '<button class="export-btn" onclick="exportProgress()">⬇ Export</button>' +
-        '<label class="export-btn" style="cursor:pointer">⬆ Import<input type="file" accept=".json" style="display:none" onchange="importProgress(this.files[0])"></label>' +
+        '<button class="export-btn" onclick="exportProgress()">⬇ Opslaan</button>' +
+        '<label class="export-btn" style="cursor:pointer">⬆ Laden<input type="file" accept=".json" style="display:none" onchange="importProgress(this.files[0])"></label>' +
       '</div>';
   }
 
   function silentAnswer(btn, chosen) {
     if (silentAnswered || !silentCard) return;
     silentAnswered = true;
-    var correct = normalise(chosen) === normalise(silentCard.en);
+    var correct = normalise(chosen) === normalise(silentCard.back);
 
     // Highlight options
     document.querySelectorAll('.drill-option').forEach(function(b) {
-      if (normalise(b.textContent) === normalise(silentCard.en)) b.classList.add('correct-ans');
+      if (normalise(b.textContent) === normalise(silentCard.back)) b.classList.add('correct-ans');
       else if (b === btn && !correct) b.classList.add('wrong-ans');
     });
 
     // Feedback
     var fb = document.getElementById('silent-fb');
     if (fb) {
-      fb.textContent = correct ? '✓ Correct!' : '✗ ' + silentCard.fr + ' = ' + silentCard.en;
+      fb.textContent = correct ? '✓ Goed zo!' : '✗ Het is: ' + silentCard.back;
       fb.className = 'drill-feedback ' + (correct ? 'correct' : 'wrong');
     }
 
@@ -806,7 +805,7 @@
       audioStore[id] = audioB64;
       var btn = document.createElement('button');
       btn.className = 'replay';
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Replay';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Nog eens';
       btn.addEventListener('click', function () { playB64(audioStore[id]); });
       el.appendChild(document.createElement('br'));
       el.appendChild(btn);
@@ -878,7 +877,7 @@
     }).then(function (r) { return r.json(); }).then(function (data) {
       hideThinking();
       if (data.error) { toast(data.error); setMic('idle'); busy = false; return; }
-      if (data.empty) { toast("Didn't catch that — try again."); setMic('idle'); busy = false; return; }
+      if (data.empty) { toast('Ik hoorde het niet — probeer nog eens.'); setMic('idle'); busy = false; return; }
       if (data.userText) {
         addMessage('user', data.userText, null);
         history.push({ role: 'user', content: data.userText });
@@ -895,7 +894,7 @@
       busy = false;
     }).catch(function () {
       hideThinking();
-      toast('Connection hiccup — try again.');
+      toast('Even geen verbinding — probeer nog eens.');
       setMic('idle');
       busy = false;
     });
@@ -917,7 +916,7 @@
         stream.getTracks().forEach(function (t) { t.stop(); });
         var type = mediaRecorder.mimeType || mime || 'audio/webm';
         var blob = new Blob(chunks, { type: type });
-        if (blob.size < 1400) { setMic('idle'); toast("Didn't catch that — hold a moment longer."); return; }
+        if (blob.size < 1400) { setMic('idle'); toast('Ik hoorde niets — houd de knop iets langer vast.'); return; }
         setMic('processing');
         blobToB64(blob).then(function (b64) {
           if (_drillOnStop) {
@@ -936,7 +935,7 @@
       autoStop = setTimeout(function () { if (recording) stopRecording(); }, 40000);
     }).catch(function () {
       setMic('idle');
-      toast('I need microphone access to hear you — enable it in your browser settings.');
+      toast('Ik heb de microfoon nodig om je te horen — zet die aan in je browser.');
     });
   }
 

@@ -1,4 +1,4 @@
-// Frenchy — optional self-hosting server for a VPS (no dependencies).
+// Englishy — optional self-hosting server for a VPS (no dependencies).
 // Vercel users can ignore this file. To run on your own box:
 //   export OPENAI_API_KEY=sk-...   &&   node server.js
 // Then put it behind Nginx with HTTPS (the microphone requires a secure origin).
@@ -68,5 +68,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Frenchy running on http://localhost:${PORT}`);
+  console.log(`Englishy running on http://localhost:${PORT}`);
 });

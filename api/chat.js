@@ -1,6 +1,6 @@
-// Frenchy — server-side handler.
+// Englishy — server-side handler.
 // Runs as a Vercel serverless function (/api/chat) AND is reused by server.js for VPS hosting.
-// Pipeline: audio -> transcription (auto-detects FR/NL/EN) -> tutor brain -> spoken French reply.
+// Pipeline: audio -> transcription (auto-detects NL/EN) -> tutor brain -> spoken English reply.
 // The OpenAI key is read from the environment and never sent to the browser.
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -32,7 +32,7 @@ async function transcribe(audioBase64, mimeType) {
   const form = new FormData();
   form.append('file', new Blob([buf], { type }), `audio.${ext}`);
   form.append('model', STT_MODEL);
-  // Deliberately no "language" param so French, Dutch and English are auto-detected.
+  // Deliberately no "language" param so Dutch and English are auto-detected.
 
   const r = await fetch('https://api.openai.com/v1/audio/transcriptions', {
     method: 'POST',

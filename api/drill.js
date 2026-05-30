@@ -1,7 +1,7 @@
 // api/drill.js — evaluates a spoken drill answer and returns audio feedback.
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const TTS_MODEL = process.env.TTS_MODEL || 'gpt-4o-mini-tts';
-const pack = require('../packs/' + (process.env.PACK || 'french'));
+const pack = require('../packs/' + (process.env.PACK || 'english-child'));
 
 function readRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -12,7 +12,7 @@ function readRawBody(req) {
   });
 }
 
-async function tts(text) {
+async function tts(text, instructions) {
   const r = await fetch('https://api.openai.com/v1/audio/speech', {
     method: 'POST',
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
@@ -20,7 +20,7 @@ async function tts(text) {
       model: TTS_MODEL,
       voice: pack.ttsVoice,
       input: text,
-      instructions: pack.ttsInstructions,
+      instructions: instructions || pack.ttsInstructions,
       response_format: 'mp3',
     }),
   });
@@ -37,14 +37,12 @@ function normalise(s) {
 
 function checkAnswer(userAnswer, card) {
   const got = normalise(userAnswer);
-  const expected = normalise(card.en);
+  const expected = normalise(card.back);
   if (got === expected) return true;
-  // Also accept without pronouns for conj cards (e.g. "vais" matches "je vais")
-  if (card.type === 'conj') {
-    const parts = expected.split(' ');
-    return parts.some(p => p.length > 2 && got.includes(p));
-  }
-  return false;
+  // Be lenient: accept the answer if the key word is somewhere in what they said
+  // (kids often say "it is a horse" instead of just "horse").
+  const parts = expected.split(' ');
+  return parts.some(p => p.length > 2 && got.includes(p));
 }
 
 module.exports = async function handler(req, res) {
@@ -70,9 +68,10 @@ module.exports = async function handler(req, res) {
 
     const { card, userAnswer, ttsOnly, text } = body;
 
-    // ttsOnly mode: just speak a prompt (used to read card prompt aloud)
+    // ttsOnly mode: read the (Dutch) card prompt aloud using the pack's
+    // prompt voice instructions, so Dutch is pronounced naturally.
     if (ttsOnly && text) {
-      const audio = await tts(text);
+      const audio = await tts(text, pack.promptTtsInstructions);
       return send(200, { audio });
     }
 
@@ -80,15 +79,12 @@ module.exports = async function handler(req, res) {
 
     const correct = checkAnswer(userAnswer, card);
 
+    // Feedback is spoken aloud in English (immersion). Keep it tiny and warm.
     let feedback;
     if (correct) {
-      feedback = card.type === 'conj'
-        ? `Oui! "${card.en}". Excellent!`
-        : `Oui, c'est ça! "${card.fr}" — ${card.en}.`;
+      feedback = `Yes! "${card.back}". Well done!`;
     } else {
-      feedback = card.type === 'conj'
-        ? `Pas tout à fait. La bonne réponse est: ${card.en}.`
-        : `Pas tout à fait. C'est "${card.fr}" — ${card.en}.`;
+      feedback = `Almost! It is "${card.back}".`;
     }
 
     const audio = await tts(feedback).catch(() => '');

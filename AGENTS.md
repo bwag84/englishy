@@ -1,32 +1,47 @@
-# Frenchy
+# Englishy
 
-Voice-first French conversation tutor. You speak French out loud, Frenchy talks back, and when you get stuck you can drop into Dutch or English — it catches you, then returns to French. Built for an adult Dutch speaker getting ready for a holiday in France: **speaking and listening first**, with practical survival scenarios (bakery, café, restaurant, shops, train and ticket counters, hotels, directions).
+Voice-first English tutor for a young Dutch child. She speaks English out loud, Englishy talks back in a warm **British** voice, and when she gets stuck she can drop into Dutch — it catches her, hands her the English words, then carries on in English. Built for a **7-year-old Dutch girl**: **speaking and listening first**, playful and gentle, with friendly games drawn from her world (ballet, dancing, gymnastics, unicorns and magic, animals, school, easy maths, food and play).
+
+The on-screen **UI is in Dutch** (so a young child knows what to do); the language she **learns** is **British English**.
+
+This repo is a spinoff of the original "Frenchy" app. Frenchy has been removed; Englishy keeps the engine and ships a single English-for-a-child course pack.
 
 ---
 
-## Current architecture
+## Architecture: engine + course pack
 
-A single static page plus one small server function. **No build step. No dependencies** (relies on Node 18+ built-in `fetch`, `FormData`, and `Blob`).
+The reusable **engine** (UI shell, conversation loop, drilling, PWA, deploy plumbing) is separated from a config-driven **course pack** (everything language-specific). A new language/learner is a new pack, not a new app.
 
-The conversation loop:
+- **Engine:** `index.html` (UI + record→play loop + drills), `api/chat.js`, `api/drill.js`, `server.js`, PWA assets.
+- **Pack:** `packs/english-child.js` (+ `packs/english-child/cards.js`) — target language, tutor persona/system prompt, UI copy, theme colours, voice + voice instructions, and the drill cards. Selected by the `PACK` env var, **defaulting to `english-child`**.
+
+### Conversation loop
 1. The browser records the learner — push-to-talk via `MediaRecorder`.
-2. Audio is sent to the server function as base64 JSON.
-3. The function transcribes it (`gpt-4o-transcribe`, with **no `language` param** so French / Dutch / English are auto-detected), runs the tutor brain (a chat completion using the system prompt), and synthesises a spoken reply (`gpt-4o-mini-tts`).
-4. The function returns `{ userText, assistantText, audio }` where `audio` is a base64 mp3.
+2. Audio is sent to `/api/chat` as base64 JSON.
+3. The function transcribes it (`gpt-4o-transcribe`, **no `language` param** so Dutch / English auto-detect), runs the tutor brain (chat completion with the pack's system prompt), and synthesises a spoken British-English reply (`gpt-4o-mini-tts`, using the pack's `ttsInstructions`).
+4. It returns `{ userText, assistantText, audio }` (`audio` is base64 mp3).
 5. The browser shows both lines and plays the audio.
 
-The OpenAI key is read from the environment **server-side only** and is never sent to the browser.
+The OpenAI key is read **server-side only** and never sent to the browser.
+
+### Drilling (vocab / sentences / quiet game)
+The bottom tabs add stateful practice on top of the chat:
+- **Woorden** (vocab) and **Zinnen** (sentences) are *spoken* drills: the Dutch prompt is read aloud (in Dutch, via the pack's `promptTtsInstructions`), the child speaks the English answer, `/api/drill` checks it and speaks warm English feedback.
+- **Kiezen** is a quiet multiple-choice game.
+- Scheduling uses an **SM-2 spaced-repetition** algorithm; progress is stored in the browser (`localStorage`, key `englishy_progress`). Cards have `{ id, type, front, back, example }` where `front` is the Dutch prompt and `back` is the English answer. `type` is `vocab` or `conj` (used for the sentence drill).
 
 ---
 
 ## Key files
 
-- **`index.html`** — the entire front end: mobile-first café-styled UI, push-to-talk recording, audio playback, the conversation transcript with a Replay button per line, and PWA wiring. Vanilla HTML/CSS/JS, all inline.
-- **`api/chat.js`** — the server-side handler (Vercel serverless function). Holds the tutor **system prompt** and the STT → brain → TTS pipeline. Also reused by `server.js`.
-- **`server.js`** — optional zero-dependency Node server for self-hosting on a VPS. Serves the static files and routes `/api/chat` to the handler in `api/chat.js`.
-- **`manifest.json`, `sw.js`, `icon-192.png`, `icon-512.png`** — PWA assets (installable, fullscreen, app icon).
+- **`index.html`** — the entire front end: Dutch, mobile-first UI, push-to-talk recording, audio playback, transcript with a "Nog eens" replay button, the drill tabs (SM-2 + localStorage), and PWA wiring. Vanilla HTML/CSS/JS, all inline. Reads the active pack from `/api/config` and applies its copy + theme at runtime.
+- **`api/chat.js`** — the conversation handler (STT → brain → TTS). Loads the pack for the system prompt and voice.
+- **`api/drill.js`** — evaluates a spoken drill answer and returns spoken feedback; also reads prompts aloud (`ttsOnly`).
+- **`api/config.js`** — returns pack metadata (name, uiCopy, theme, cards) to the front end.
+- **`packs/english-child.js`** + **`packs/english-child/cards.js`** — the course pack.
+- **`server.js`** — optional zero-dependency Node server for self-hosting on a VPS; routes `/api/chat`, `/api/config`, `/api/drill`.
+- **`manifest.json`, `sw.js`, `icon-192.png`, `icon-512.png`, `icon-src.svg`** — PWA assets. The icon is a Union Jack (`icon-src.svg` is the source; regenerate the PNGs from it).
 - **`package.json`** — no dependencies; `engines.node >= 18`; `start` runs `server.js`.
-- **`README.md`** — deploy and usage notes.
 
 ---
 
@@ -35,10 +50,11 @@ The OpenAI key is read from the environment **server-side only** and is never se
 | Variable | Default | Purpose |
 |---|---|---|
 | `OPENAI_API_KEY` | _(required)_ | OpenAI key. Server-side only. |
+| `PACK` | `english-child` | Which course pack to load. |
 | `CHAT_MODEL` | `gpt-4o-mini` | The tutor's brain. |
-| `STT_MODEL` | `gpt-4o-transcribe` | Speech-to-text (auto-detects FR / NL / EN). |
-| `TTS_MODEL` | `gpt-4o-mini-tts` | Text-to-speech. |
-| `TTS_VOICE` | `coral` | Speaking voice. |
+| `STT_MODEL` | `gpt-4o-transcribe` | Speech-to-text (auto-detects NL / EN). |
+| `TTS_MODEL` | `gpt-4o-mini-tts` | Text-to-speech (honours voice instructions). |
+| `TTS_VOICE` | _(pack: `fable`)_ | Speaking voice. The British accent is driven mainly by the pack's `ttsInstructions`. |
 
 ---
 
@@ -47,20 +63,21 @@ The OpenAI key is read from the environment **server-side only** and is never se
 - **Run locally (VPS-style):** `export OPENAI_API_KEY=sk-... && node server.js` → http://localhost:3000
 - **Deploy to production (Vercel):** `vercel --prod`
 - **Add/update a Vercel env var:** `vercel env add NAME`, then `vercel --prod`
+- **Regenerate the icon:** edit `icon-src.svg`, then rasterise to `icon-512.png` / `icon-192.png` (e.g. `qlmanage -t -s 512 -o OUTDIR icon-src.svg`).
 
-Deployed on Vercel; also runnable on a VPS behind Nginx + HTTPS. The microphone requires a **secure (https) origin** — `localhost` is fine for testing, a plain `http://` IP is not.
+The microphone requires a **secure (https) origin** — `localhost` is fine for testing, a plain `http://` IP is not.
 
 ---
 
 ## Design principles (preserve these)
 
 - **Voice-first.** The point is speaking and listening, not reading.
-- **Spoken-style replies.** The tutor's text is read aloud by TTS, so replies must stay short (1–3 sentences) and must **never** contain lists, bullet points, headings, or emoji.
-- **Bilingual safety net.** The learner can fall back to Dutch or English at any time; the tutor helps in that language, then returns to French.
-- **Auto-calibration.** The tutor judges the learner's level from their responses and adjusts difficulty.
-- **Warm and encouraging.** Never make the learner feel slow.
+- **Spoken-style replies.** The tutor's text is read aloud, so replies stay short (1–2 sentences) and must **never** contain lists, bullet points, headings, or emoji.
+- **British English.** The child learns British English — vocabulary (mum, colour, maths…) and accent. Keep the voice instructions British.
+- **Dutch UI, Dutch safety net.** Everything on screen is Dutch; the child can fall back to Dutch any time and the tutor helps, then returns to English.
+- **Child-safe always.** Stay inside a 7-year-old's world; gently steer away from anything scary, sad, grown-up or unsuitable. The system prompt enforces this — keep it strong.
+- **Playful and encouraging.** Lots of short praise; never make her feel slow. Lean into her interests (ballet, dance, gymnastics, unicorns, animals, maths).
 - **Mobile-first and installable.** It should feel like a real app on a phone.
-- **Stateless today.** The app currently stores nothing — refresh clears the conversation.
 - **Secrets only via env.** Never put the OpenAI key in client code.
 - **No build step / zero dependencies.** Keep it this way unless there's a strong reason not to.
 
@@ -68,44 +85,14 @@ Deployed on Vercel; also runnable on a VPS behind Nginx + HTTPS. The microphone 
 
 ## Roadmap
 
-Active and planned work, in priority order.
-
-### 1. Refactor to an "engine + course pack" architecture (do this first)
-
-Separate the reusable **engine** from a config-driven **course pack** so spinoffs don't require forking.
-
-- **Engine:** the conversation loop (record → transcribe → brain → speak → play), the UI shell, the PWA and deploy plumbing, and — once built — the drilling features.
-- **Course pack:** everything language-specific — target language, the tutor's persona and system prompt, the scenario list, the voice, the on-screen copy, and the theme.
-
-French becomes the first pack. After this refactor, a new language is a new pack, not a new app.
-
-### 2. Vocabulary drilling and grammar drilling
-
-New engine features that any pack can switch on. These introduce **state**, which the app does not currently have:
-
-- Track which words and grammar structures the learner has met, and how well they know each.
-- Schedule what to resurface and when. **Spaced repetition** (e.g. an SM-2-style algorithm) is the standard approach.
-- Choose a persistence layer: `localStorage` is the quickest start; a small backend store / database is needed for cross-device progress. (The conversation loop is stateless today and the front end uses no browser storage — adding persistence is a deliberate new capability.)
-
-Keep drilling **conversational and spoken** where possible (spoken prompts, spoken answers) to stay true to the voice-first principle, rather than turning into silent flashcards.
-
-### 3. Spinoff — an English course pack for a young child (DO NOT BUILD YET)
-
-A planned second pack, **not to be built until explicitly requested**. The engine/pack split in step 1 should be designed with it in mind:
-
-- **Target language:** English.
-- **Learner:** a 7-year-old Dutch child.
-- **Helper language:** Dutch (the child falls back to Dutch, not English).
-- **Tutor persona:** playful, gentle, very simple, kid-appropriate; shorter turns; lots of praise; light gamification.
-- **Theme:** brighter and more playful than the French pack.
-- **Content safety:** all scenarios and language must be appropriate for a young child.
-
-Same engine, new pack.
+- **Done:** engine + pack split; vocab/sentence/quiet drills with SM-2 spaced repetition and localStorage progress; Dutch UI; British voice; Union Jack branding; child-safety guardrails.
+- **Next ideas:** cross-device progress (a small backend store instead of localStorage); more drill content and themes per topic; light gamification (stars/streaks) suited to a young child; a parent view of progress.
 
 ---
 
 ## Known considerations
 
-- **iOS audio playback.** Playback currently uses the Web Audio API (`decodeAudioData` + a buffer source). On iPhones, Web Audio can be silenced by the hardware ringer/mute switch and the audio context can go dormant between turns. If playback problems surface, the robust fix is to play replies through a reusable HTML `<audio>` element (an object URL built from the mp3 blob), unlocked inside the Start tap — HTML media plays through the silent switch.
-- **Cost.** Voice is metered per minute on the OpenAI key. Fine for personal use (cents per session); worth watching if usage grows.
+- **iOS audio playback.** Playback uses the Web Audio API (`decodeAudioData` + a buffer source), unlocked inside the Start tap. On iPhones, Web Audio can be silenced by the hardware mute switch and the context can go dormant between turns. If playback problems surface, the robust fix is to play replies through a reusable HTML `<audio>` element (an object URL from the mp3 blob) — HTML media plays through the silent switch.
+- **Cost.** Voice is metered per minute on the OpenAI key. Fine for personal use (cents per session).
 - **Request size.** Audio is sent as base64 JSON; recording auto-stops at 40s to keep clips within serverless body limits.
+- **Drill prompt audio.** Drill prompts are Dutch and read with the pack's `promptTtsInstructions`; feedback is English with `ttsInstructions`. Both use the single pack `ttsVoice`.

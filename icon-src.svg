@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 60 60">
+  <defs>
+    <clipPath id="sq"><rect width="60" height="60"/></clipPath>
+  </defs>
+  <g clip-path="url(#sq)">
+    <!-- blue field -->
+    <rect width="60" height="60" fill="#012169"/>
+    <!-- white diagonal saltire (St Andrew) -->
+    <g stroke="#FFFFFF" stroke-width="12">
+      <line x1="0" y1="0" x2="60" y2="60"/>
+      <line x1="60" y1="0" x2="0" y2="60"/>
+    </g>
+    <!-- red diagonal saltire (St Patrick) -->
+    <g stroke="#C8102E" stroke-width="4">
+      <line x1="0" y1="0" x2="60" y2="60"/>
+      <line x1="60" y1="0" x2="0" y2="60"/>
+    </g>
+    <!-- white cross (St George) -->
+    <g stroke="#FFFFFF" stroke-width="18">
+      <line x1="30" y1="0" x2="30" y2="60"/>
+      <line x1="0" y1="30" x2="60" y2="30"/>
+    </g>
+    <!-- red cross (St George) -->
+    <g stroke="#C8102E" stroke-width="10">
+      <line x1="30" y1="0" x2="30" y2="60"/>
+      <line x1="0" y1="30" x2="60" y2="30"/>
+    </g>
+  </g>
+</svg>

@@ -1,4 +1,4 @@
-const CACHE = 'frenchy-v1';
+const CACHE = 'englishy-v1';
 const SHELL = ['/', '/index.html', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', (e) => {
