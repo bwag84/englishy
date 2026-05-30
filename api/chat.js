@@ -48,7 +48,7 @@ async function chat(messages) {
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: CHAT_MODEL, messages, temperature: 0.7, max_tokens: 320 }),
+    body: JSON.stringify({ model: CHAT_MODEL, messages, temperature: 0.7, max_tokens: 140 }),
   });
   if (!r.ok) throw new Error(`Chat failed (${r.status}): ${await r.text()}`);
   const j = await r.json();
