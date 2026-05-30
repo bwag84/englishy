@@ -76,7 +76,7 @@ The microphone requires a **secure (https) origin** — `localhost` is fine for 
 ## Design principles (preserve these)
 
 - **Voice-first.** The point is speaking and listening, not reading.
-- **Spoken-style replies.** The tutor's text is read aloud, so replies stay short (1–2 sentences) and must **never** contain lists, bullet points, headings, or emoji.
+- **Spoken-style replies.** The tutor's text is read aloud, so replies stay very short (at most two sentences, often just one — also hard-capped via `max_tokens` in `api/chat.js`) and must **never** contain lists, bullet points, headings, or emoji.
 - **Dutch-first, then English.** Sterre speaks mainly Dutch and introduces English gently, one word at a time. Don't make the conversation English-first — it's too hard for a beginner. The English she learns is **British English** (vocabulary like mum, colour, maths… and a British accent); keep the English side of the voice instructions British.
 - **Personal.** The tutor is Sterre (a rainbow unicorn) and always addresses the child by name, **Isa**. Keep it warm and personal.
 - **Dutch UI, Dutch safety net.** Everything on screen is Dutch; the child can fall back to Dutch any time and Sterre helps, then nudges back toward English.
@@ -103,3 +103,4 @@ The microphone requires a **secure (https) origin** — `localhost` is fine for 
 - **Request size.** Audio is sent as base64 JSON; recording auto-stops at 40s to keep clips within serverless body limits.
 - **Drill prompt audio.** Drill prompts are Dutch and read with the pack's `promptTtsInstructions`; feedback is Dutch-first (with the English answer word) read with the default `ttsInstructions`. Both use the single pack `ttsVoice` (`coral`).
 - **Two localStorage stores.** `englishy_progress` (SM-2 drill scheduling) and `englishy_stars` (gamification). Changing these keys resets that data.
+- **Tuning knobs (set per parent feedback).** Reply length: `max_tokens: 140` in `api/chat.js` plus a "hooguit twee korte zinnetjes" brevity line in the system prompt. Speech pace: `gpt-4o-mini-tts` has **no numeric speed parameter** — pacing is set qualitatively in the pack's `ttsInstructions` / `promptTtsInstructions` (currently nudged ~10% faster than a slow pace). Voice: `coral` (light/warm/feminine); alternatives if asked — `shimmer`/`nova` (lighter), `sage` (calmer).
