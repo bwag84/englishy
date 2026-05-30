@@ -1,0 +1,437 @@
+/* ============================================================
+   KAWAII RAINBOW — a pastel unicorn/ice-cream design system
+   Extracted from "Rainbow Unicorn Arkanoid"
+   ------------------------------------------------------------
+   USAGE
+   1. Add the fonts to your <head> (or import in your CSS):
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+   2. Import this file:
+        <link rel="stylesheet" href="kawaii-rainbow.css">
+      …or in a bundler / CSS module:  @import "./kawaii-rainbow.css";
+   3. Use the tokens (var(--kr-pink-3)…) and the .kr-* classes below.
+
+   Everything is namespaced with --kr- (tokens) and .kr- (classes)
+   so it won't collide with your own styles.
+   ============================================================ */
+
+/* If you prefer to load the fonts from CSS instead of <head>, uncomment:
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;700;800&display=swap');
+*/
+
+/* ----------------------------------------------------------------
+   1. DESIGN TOKENS
+   ---------------------------------------------------------------- */
+:root {
+  /* — Pinks — */
+  --kr-pink-1: #ffd6ec;   /* palest blush */
+  --kr-pink-2: #ff9fd1;
+  --kr-pink-3: #ff5fb3;   /* core pink */
+  --kr-pink-hot: #ff3ea5; /* neon hot pink (accent) */
+
+  /* — Violets — */
+  --kr-violet-1: #e9d4ff;
+  --kr-violet-2: #c79bff;
+  --kr-violet-3: #9a5cff; /* core violet */
+
+  /* — Neon / candy accents — */
+  --kr-mint: #7cf6d2;
+  --kr-yellow: #fff07a;
+  --kr-peach: #ffb38a;
+  --kr-sky-blue: #7ad6ff;
+  --kr-green: #7cf6a8;
+
+  /* — Surface & ink — */
+  --kr-sky-top: #ffe6f4;
+  --kr-sky-bot: #d6c8ff;
+  --kr-white: #ffffff;
+  --kr-ink: #4a2a5e;       /* deep grape — body text & faces */
+  --kr-ink-soft: #7a5a8e;  /* muted text */
+
+  /* — Rainbow ramp (use for stripes, gradients, sequences) — */
+  --kr-rainbow-1: #ff7ac6;
+  --kr-rainbow-2: #ffb15c;
+  --kr-rainbow-3: #fff07a;
+  --kr-rainbow-4: #7cf6a8;
+  --kr-rainbow-5: #7ad6ff;
+  --kr-rainbow-6: #c79bff;
+
+  /* — Gradients — */
+  --kr-grad-sky: linear-gradient(180deg, var(--kr-sky-top) 0%, #ffd2ea 40%, var(--kr-violet-1) 75%, var(--kr-sky-bot) 100%);
+  --kr-grad-title: linear-gradient(180deg, #ff5fb3 0%, #ff7ac6 30%, #c79bff 70%, #9a5cff 100%);
+  --kr-grad-candy: linear-gradient(180deg, #ff7ac6, #ff3ea5);
+  --kr-grad-mint: linear-gradient(180deg, #a9fce6, #7cf6d2);
+
+  /* — Type — */
+  --kr-font-body: "Fredoka", system-ui, -apple-system, sans-serif;
+  --kr-font-display: "Baloo 2", "Fredoka", system-ui, sans-serif;
+
+  /* — Radii — */
+  --kr-radius-sm: 12px;
+  --kr-radius-md: 20px;
+  --kr-radius-lg: 36px;
+  --kr-radius-pill: 999px;
+
+  /* — Spacing scale — */
+  --kr-space-1: 6px;
+  --kr-space-2: 10px;
+  --kr-space-3: 16px;
+  --kr-space-4: 24px;
+  --kr-space-5: 36px;
+
+  /* — Shadows (soft, violet-tinted, candy depth) — */
+  --kr-shadow-soft: 0 10px 24px rgba(154, 92, 255, 0.15);
+  --kr-shadow-float: 0 30px 80px -20px rgba(154, 92, 255, 0.45);
+  --kr-shadow-pill: 0 6px 0 rgba(154, 92, 255, 0.18), 0 10px 24px rgba(154, 92, 255, 0.15);
+  /* the "candy" stack gives buttons their 3D gummy look */
+  --kr-shadow-candy: 0 8px 0 #c91d7a, 0 18px 30px rgba(201, 29, 122, 0.45),
+                     inset 0 -6px 0 rgba(0,0,0,0.08), inset 0 3px 0 rgba(255,255,255,0.6);
+}
+
+/* ----------------------------------------------------------------
+   2. BASE / PAGE BACKGROUND
+   Add class "kr-bg" to <body> for the pastel sky gradient.
+   ---------------------------------------------------------------- */
+.kr-bg {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--kr-font-body);
+  color: var(--kr-ink);
+  background: var(--kr-grad-sky);
+  background-attachment: fixed;
+}
+
+.kr-text-soft { color: var(--kr-ink-soft); }
+
+/* ----------------------------------------------------------------
+   3. TYPOGRAPHY
+   ---------------------------------------------------------------- */
+.kr-display {
+  font-family: var(--kr-font-display);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: 0.5px;
+}
+
+/* Big rainbow gradient headline with a white sticker outline. */
+.kr-title {
+  font-family: var(--kr-font-display);
+  font-weight: 800;
+  font-size: clamp(40px, 8vw, 78px);
+  line-height: 0.95;
+  letter-spacing: 1px;
+  background: var(--kr-grad-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 4px 0 rgba(255,255,255,0.9), 0 0 40px rgba(255, 95, 179, 0.4);
+  -webkit-text-stroke: 3px white;
+  paint-order: stroke fill;
+  transform: rotate(-2deg);
+  margin: 0;
+}
+
+/* Subheading / friendly supporting copy. */
+.kr-subtitle {
+  font-family: var(--kr-font-body);
+  font-size: clamp(16px, 2.4vw, 22px);
+  font-weight: 600;
+  color: var(--kr-violet-3);
+  text-shadow: 0 2px 0 rgba(255,255,255,0.7);
+  margin: 0;
+}
+
+/* Outlined sticker text — good for badges, scores, level names. */
+.kr-sticker-text {
+  font-family: var(--kr-font-display);
+  font-weight: 800;
+  color: white;
+  -webkit-text-stroke: 4px var(--kr-pink-hot);
+  paint-order: stroke fill;
+  text-shadow: 0 6px 0 var(--kr-violet-3), 0 8px 30px rgba(154,92,255,0.6);
+}
+
+.kr-eyebrow {
+  font-family: var(--kr-font-display);
+  font-weight: 700;
+  color: var(--kr-violet-3);
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+/* ----------------------------------------------------------------
+   4. BUTTONS
+   ---------------------------------------------------------------- */
+/* Chunky gummy "candy" button (the primary call to action). */
+.kr-btn {
+  font-family: var(--kr-font-display);
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: 1px;
+  color: white;
+  background: var(--kr-grad-candy);
+  border: none;
+  padding: 16px 40px;
+  border-radius: var(--kr-radius-pill);
+  cursor: pointer;
+  box-shadow: var(--kr-shadow-candy);
+  text-shadow: 0 2px 0 rgba(0,0,0,0.15);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.kr-btn:hover { transform: translateY(-2px); }
+.kr-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 #c91d7a, 0 6px 12px rgba(201, 29, 122, 0.4);
+}
+
+/* Mint variant of the candy button. */
+.kr-btn.kr-btn--mint {
+  background: var(--kr-grad-mint);
+  color: var(--kr-ink);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+  box-shadow: 0 8px 0 #2bb89a, 0 18px 30px rgba(43, 184, 154, 0.4),
+              inset 0 -6px 0 rgba(0,0,0,0.06), inset 0 3px 0 rgba(255,255,255,0.7);
+}
+.kr-btn.kr-btn--mint:active {
+  box-shadow: 0 4px 0 #2bb89a, 0 6px 12px rgba(43, 184, 154, 0.4);
+}
+
+/* Soft secondary / ghost button. */
+.kr-btn-soft {
+  font-family: var(--kr-font-display);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--kr-violet-3);
+  background: rgba(255,255,255,0.85);
+  border: 3px solid white;
+  padding: 12px 26px;
+  border-radius: var(--kr-radius-pill);
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(154,92,255,0.18), 0 10px 24px rgba(154,92,255,0.12);
+  transition: transform 0.08s ease;
+}
+.kr-btn-soft:hover { transform: translateY(-1px); }
+.kr-btn-soft:active { transform: translateY(2px); box-shadow: 0 3px 0 rgba(154,92,255,0.18); }
+
+/* Round icon button (mute, restart, close…). */
+.kr-icon-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 3px solid white;
+  background: rgba(255,255,255,0.85);
+  color: var(--kr-violet-3);
+  font-family: var(--kr-font-display);
+  font-weight: 800;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(154,92,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.08s ease;
+}
+.kr-icon-btn:hover { transform: translateY(-1px); }
+.kr-icon-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(154,92,255,0.25); }
+
+/* ----------------------------------------------------------------
+   5. SURFACES — pills, cards, glass panels
+   ---------------------------------------------------------------- */
+/* Frosted-glass rounded panel (the game frame). */
+.kr-panel {
+  border-radius: var(--kr-radius-lg);
+  background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.25) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 4px solid rgba(255, 255, 255, 0.85);
+  box-shadow: var(--kr-shadow-float),
+              inset 0 0 0 6px rgba(255, 158, 209, 0.35),
+              inset 0 0 60px rgba(255, 255, 255, 0.4);
+}
+
+/* White rounded card. */
+.kr-card {
+  background: rgba(255,255,255,0.9);
+  border: 3px solid white;
+  border-radius: var(--kr-radius-md);
+  padding: var(--kr-space-4);
+  box-shadow: var(--kr-shadow-soft);
+}
+
+/* Stat pill (label + value), as used in the HUD. */
+.kr-pill {
+  display: inline-flex; align-items: center; gap: var(--kr-space-2);
+  background: rgba(255,255,255,0.85);
+  border: 3px solid white;
+  border-radius: var(--kr-radius-pill);
+  padding: 8px 18px;
+  box-shadow: var(--kr-shadow-pill);
+}
+.kr-pill .kr-pill-label {
+  font-family: var(--kr-font-display);
+  font-weight: 700;
+  color: var(--kr-violet-3);
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+.kr-pill .kr-pill-value {
+  font-family: var(--kr-font-display);
+  font-weight: 800;
+  color: var(--kr-pink-hot);
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Small rounded chip / tag. */
+.kr-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--kr-font-body);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--kr-violet-3);
+  background: var(--kr-violet-1);
+  border: 2px solid white;
+  padding: 4px 12px;
+  border-radius: var(--kr-radius-pill);
+}
+
+/* Keyboard key cap. */
+.kr-kbd {
+  display: inline-block;
+  background: white;
+  border: 2px solid var(--kr-violet-2);
+  border-bottom-width: 4px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-family: var(--kr-font-body);
+  font-size: 14px;
+  color: var(--kr-violet-3);
+}
+
+/* ----------------------------------------------------------------
+   6. FORM CONTROLS
+   ---------------------------------------------------------------- */
+.kr-input {
+  font-family: var(--kr-font-body);
+  font-size: 16px;
+  color: var(--kr-ink);
+  background: white;
+  border: 3px solid var(--kr-violet-1);
+  border-radius: var(--kr-radius-pill);
+  padding: 10px 18px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.kr-input::placeholder { color: var(--kr-violet-2); }
+.kr-input:focus {
+  border-color: var(--kr-pink-3);
+  box-shadow: 0 0 0 4px rgba(255, 95, 179, 0.18);
+}
+
+/* ----------------------------------------------------------------
+   7. DECORATIONS — hearts, sparkles, clouds, rainbow
+   Pure-CSS shapes you can drop anywhere.
+   ---------------------------------------------------------------- */
+
+/* Heart (size via --kr-heart-size, color via --kr-heart-color). */
+.kr-heart {
+  --kr-heart-size: 26px;
+  --kr-heart-color: var(--kr-pink-hot);
+  width: var(--kr-heart-size);
+  height: calc(var(--kr-heart-size) * 0.92);
+  position: relative;
+  transform: rotate(-45deg);
+  background: var(--kr-heart-color);
+  border-radius: 4px;
+  display: inline-block;
+}
+.kr-heart::before, .kr-heart::after {
+  content: ""; position: absolute;
+  width: var(--kr-heart-size); height: var(--kr-heart-size);
+  border-radius: 50%;
+  background: var(--kr-heart-color);
+}
+.kr-heart::before { top: calc(var(--kr-heart-size) * -0.5); left: 0; }
+.kr-heart::after  { top: 0; right: calc(var(--kr-heart-size) * -0.5); }
+.kr-heart.kr-empty { --kr-heart-color: rgba(255, 158, 209, 0.25); }
+
+/* Four-point sparkle/star. Animate with .kr-twinkle. */
+.kr-sparkle {
+  --kr-sparkle-size: 14px;
+  --kr-sparkle-color: #fff;
+  width: var(--kr-sparkle-size);
+  height: var(--kr-sparkle-size);
+  background: var(--kr-sparkle-color);
+  display: inline-block;
+  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+}
+.kr-twinkle { animation: kr-twinkle 2.5s ease-in-out infinite; }
+@keyframes kr-twinkle {
+  0%, 100% { transform: scale(0.5); opacity: 0.3; }
+  50%      { transform: scale(1);   opacity: 0.9; }
+}
+
+/* Fluffy cloud. Size with font-size (it scales in em). */
+.kr-cloud {
+  font-size: 60px;        /* controls overall size */
+  width: 1em; height: 0.6em;
+  position: relative;
+  background: white;
+  border-radius: var(--kr-radius-pill);
+  display: inline-block;
+  box-shadow:
+    0.5em 0 0 -0.08em white,
+    -0.5em 0 0 -0.08em white,
+    0 -0.37em 0 -0.13em white,
+    0.92em -0.17em 0 -0.17em white,
+    -0.92em -0.17em 0 -0.17em white;
+  filter: drop-shadow(0 8px 12px rgba(154,92,255,0.18));
+}
+.kr-drift { animation: kr-drift 50s linear infinite; }
+@keyframes kr-drift {
+  from { transform: translateX(-20vw); }
+  to   { transform: translateX(120vw); }
+}
+
+/* Bouncy idle wobble for mascots / icons. */
+.kr-bob { animation: kr-bob 2.4s ease-in-out infinite; }
+@keyframes kr-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-8px) rotate(2deg); }
+}
+
+/* CSS rainbow arc. Put it behind content (it's a half-ring). */
+.kr-rainbow-arc {
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, transparent 62%, var(--kr-rainbow-1) 62.5% 66%, transparent 66.5%),
+    radial-gradient(closest-side, transparent 66.5%, var(--kr-rainbow-2) 67% 70%, transparent 70.5%),
+    radial-gradient(closest-side, transparent 70.5%, var(--kr-rainbow-3) 71% 74%, transparent 74.5%),
+    radial-gradient(closest-side, transparent 74.5%, var(--kr-rainbow-4) 75% 78%, transparent 78.5%),
+    radial-gradient(closest-side, transparent 78.5%, var(--kr-rainbow-5) 79% 82%, transparent 82.5%),
+    radial-gradient(closest-side, transparent 82.5%, var(--kr-rainbow-6) 83% 86%, transparent 86.5%);
+  opacity: 0.6;
+}
+
+/* Rainbow underline/divider bar. */
+.kr-rainbow-bar {
+  height: 8px;
+  border-radius: var(--kr-radius-pill);
+  background: linear-gradient(90deg,
+    var(--kr-rainbow-1), var(--kr-rainbow-2), var(--kr-rainbow-3),
+    var(--kr-rainbow-4), var(--kr-rainbow-5), var(--kr-rainbow-6));
+}
+
+/* ----------------------------------------------------------------
+   8. HANDY UTILITIES
+   ---------------------------------------------------------------- */
+.kr-row    { display: flex; align-items: center; gap: var(--kr-space-3); }
+.kr-col    { display: flex; flex-direction: column; gap: var(--kr-space-3); }
+.kr-center { display: flex; align-items: center; justify-content: center; }
+.kr-wrap   { flex-wrap: wrap; }
+
+/* Reduced-motion: stop the looping decorations. */
+@media (prefers-reduced-motion: reduce) {
+  .kr-twinkle, .kr-drift, .kr-bob { animation: none !important; }
+}

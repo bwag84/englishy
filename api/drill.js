@@ -79,12 +79,12 @@ module.exports = async function handler(req, res) {
 
     const correct = checkAnswer(userAnswer, card);
 
-    // Feedback is spoken aloud in English (immersion). Keep it tiny and warm.
+    // Feedback is spoken aloud. Dutch-first, personal, with the English answer.
     let feedback;
     if (correct) {
-      feedback = `Yes! "${card.back}". Well done!`;
+      feedback = `Goed zo, Isa! "${card.back}". Wat knap!`;
     } else {
-      feedback = `Almost! It is "${card.back}".`;
+      feedback = `Bijna, Isa! Het is "${card.back}". Probeer maar eens: ${card.back}.`;
     }
 
     const audio = await tts(feedback).catch(() => '');
